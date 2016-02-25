@@ -1,11 +1,22 @@
-module.exports = Socket
+exports = module.exports = Socket
 
 var debug = require('debug')('simple-websocket')
 var inherits = require('inherits')
 var stream = require('stream')
 var ws = require('ws') // websockets in node - will be empty object in browser
 
-var WebSocket = typeof window !== 'undefined' ? window.WebSocket : ws
+var isBrowser = typeof window !== 'undefined'
+
+var WebSocket
+
+if (isBrowser) {
+  WebSocket = window.WebSocket
+} else {
+  WebSocket = ws
+  var Server = require('./server')
+  exports.Server = Server
+  exports.createServer = Server.createServer
+}
 
 inherits(Socket, stream.Duplex)
 
